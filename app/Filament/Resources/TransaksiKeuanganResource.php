@@ -141,7 +141,7 @@ class TransaksiKeuanganResource extends Resource
                     ->url(function () {
                         $bulan = date('m');
                         $tahun = date('Y');
-                        return route('laporan-keuangan.export', [
+                        return route('laporan.keuangan.export', [
                             'periode' => 'bulanan',
                             'bulan' => $bulan,
                             'tahun' => $tahun,

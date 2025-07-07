@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\TransaksiKeuangan;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf as DomPDF;
+use Carbon\Carbon;
+
 
 class LaporanKeuanganController extends Controller
 {
@@ -16,12 +18,15 @@ class LaporanKeuanganController extends Controller
             'bulan' => 'nullable|numeric',
         ]);
 
+
         $query = TransaksiKeuangan::query();
 
         if ($request->periode === 'bulanan') {
             $query->whereYear('tanggal', $request->tahun)
-                  ->whereMonth('tanggal', $request->bulan);
-            $judul = 'Laporan Keuangan Bulan ' . now()->setMonth((int) $request->bulan)->translatedFormat('F') . ' ' . $request->tahun;
+                ->whereMonth('tanggal', $request->bulan);
+
+            $bulanNama = Carbon::createFromDate($request->tahun, $request->bulan, 1)->translatedFormat('F');
+            $judul = 'Laporan Keuangan Bulan ' . $bulanNama . ' ' . $request->tahun;
         } else {
             $query->whereYear('tanggal', $request->tahun);
             $judul = 'Laporan Keuangan Tahun ' . $request->tahun;

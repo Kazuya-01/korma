@@ -133,23 +133,8 @@ class TransaksiKeuanganResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
-            ])
-            ->headerActions([
-                Tables\Actions\Action::make('Cetak Laporan PDF')
-                    ->icon('heroicon-o-printer')
-                    ->label('Cetak PDF Bulanan')
-                    ->url(function () {
-                        $bulan = date('m');
-                        $tahun = date('Y');
-                        return route('laporan.keuangan.export', [
-                            'periode' => 'bulanan',
-                            'bulan' => $bulan,
-                            'tahun' => $tahun,
-                        ]);
-                    })
-                    ->openUrlInNewTab()
-                    ->color('gray'),
             ]);
+          
     }
 
     public static function getPages(): array

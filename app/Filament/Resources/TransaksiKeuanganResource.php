@@ -11,7 +11,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Filters\Filter;
-use Carbon\Carbon;
+use Filament\Tables\Actions\Action;
 
 class TransaksiKeuanganResource extends Resource
 {
@@ -69,13 +69,14 @@ class TransaksiKeuanganResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        ->defaultSort('tanggal', 'asc')
             ->columns([
                 Tables\Columns\TextColumn::make('tanggal')->label('Tanggal')->date(),
 
                 Tables\Columns\TextColumn::make('jenis')
                     ->label('Jenis')
                     ->badge()
-                    ->color(fn ($state) => $state === 'pemasukan' ? 'success' : 'danger'),
+                    ->color(fn($state) => $state === 'pemasukan' ? 'success' : 'danger'),
 
                 Tables\Columns\TextColumn::make('kategori')->label('Kategori'),
 
@@ -89,25 +90,26 @@ class TransaksiKeuanganResource extends Resource
                     ->label('Bukti')
                     ->disk('public')
                     ->height(40),
-
                 Tables\Columns\TextColumn::make('saldo')
                     ->label('Saldo Setelah Transaksi')
                     ->state(function ($record) {
-                        $transaksi = TransaksiKeuangan::orderBy('tanggal')->orderBy('id')->get();
-                        $saldo = 0;
+                        $saldo = TransaksiKeuangan::where(function ($query) use ($record) {
+                            $query->where('tanggal', '<', $record->tanggal)
+                                ->orWhere(function ($q) use ($record) {
+                                    $q->where('tanggal', $record->tanggal)
+                                        ->where('id', '<=', $record->id);
+                                });
+                        })
+                            ->orderBy('tanggal')
+                            ->orderBy('id')
+                            ->get()
+                            ->reduce(function ($carry, $item) {
+                                return $carry + ($item->jenis === 'pemasukan' ? $item->jumlah : -$item->jumlah);
+                            }, 0);
 
-                        foreach ($transaksi as $item) {
-                            $saldo += $item->jenis === 'pemasukan'
-                                ? $item->jumlah
-                                : -$item->jumlah;
-
-                            if ($item->id === $record->id) {
-                                return 'Rp ' . number_format($saldo, 0, ',', '.');
-                            }
-                        }
-
-                        return null;
+                        return 'Rp ' . number_format($saldo, 0, ',', '.');
                     }),
+
             ])
             ->filters([
                 Filter::make('tanggal')
@@ -117,8 +119,8 @@ class TransaksiKeuanganResource extends Resource
                     ])
                     ->query(function (Builder $query, array $data) {
                         return $query
-                            ->when($data['from'], fn ($q) => $q->whereDate('tanggal', '>=', $data['from']))
-                            ->when($data['until'], fn ($q) => $q->whereDate('tanggal', '<=', $data['until']));
+                            ->when($data['from'], fn($q) => $q->whereDate('tanggal', '>=', $data['from']))
+                            ->when($data['until'], fn($q) => $q->whereDate('tanggal', '<=', $data['until']));
                     }),
 
                 Tables\Filters\SelectFilter::make('jenis')
@@ -133,8 +135,19 @@ class TransaksiKeuanganResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
+            ])
+            ->headerActions([
+                Tables\Actions\Action::make('tambah_transaksi')
+                    ->label('Tambah Transaksi')
+                    ->icon('heroicon-o-plus-circle')
+                    ->url(static::getUrl('create'))
+                    ->color('primary')
+                    ->button()
+                    ->size('lg')
+                    ->extraAttributes([
+                        'class' => 'font-semibold tracking-wide',
+                    ]),
             ]);
-          
     }
 
     public static function getPages(): array

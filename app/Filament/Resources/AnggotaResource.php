@@ -85,6 +85,19 @@ class AnggotaResource extends Resource
                         'Umum' => 'Umum',
                     ]),
             ])
+            ->headerActions([
+                Tables\Actions\Action::make('export_excel')
+                    ->label('Export Excel')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->url(fn() => route('export.anggota.excel'))
+                    ->openUrlInNewTab(),
+
+                Tables\Actions\Action::make('export_pdf')
+                    ->label('Export PDF')
+                    ->icon('heroicon-o-document-text')
+                    ->url(fn() => route('export.anggota.pdf'))
+                    ->openUrlInNewTab(),
+            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),

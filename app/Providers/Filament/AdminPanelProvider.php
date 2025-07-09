@@ -6,7 +6,11 @@ use App\Filament\Resources\AnggotaResource;
 use App\Filament\Resources\KegiatanResource;
 use App\Filament\Resources\UsulanKegiatanResource;
 use App\Filament\Resources\TransaksiKeuanganResource;
+use App\Filament\Resources\PengaturanResource;
+use App\Filament\Widgets\WelcomeWidget;
 use App\Filament\Widgets\RekapKeuangan;
+use App\Filament\Widgets\RekapAnggota;
+use App\Models\Pengaturan;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -23,6 +27,8 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Illuminate\Support\Facades\Storage;
+
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -34,6 +40,17 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
+            ->brandName(function () {
+                return Pengaturan::first()?->nama_organisasi ?? 'Laravel';
+            })
+            ->brandLogo(function () {
+                $logoPath = Pengaturan::first()?->logo;
+
+                return $logoPath
+                    ? Storage::url($logoPath)
+                    : null; // fallback ke default jika kosong
+            })
+
             ->login() // untuk login default
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
@@ -43,14 +60,17 @@ class AdminPanelProvider extends PanelProvider
                 UsulanKegiatanResource::class,
                 AnggotaResource::class,
                 TransaksiKeuanganResource::class,
+                PengaturanResource::class,
             ])
             ->pages([
                 Dashboard::class,
             ])
             ->widgets([
+                WelcomeWidget::class,
                 RekapKeuangan::class,
-                AccountWidget::class,
-                FilamentInfoWidget::class,
+                RekapAnggota::class,
+                // AccountWidget::class,
+                // FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

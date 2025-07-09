@@ -9,7 +9,7 @@ use Illuminate\Support\Carbon;
 
 class RekapKeuangan extends BaseWidget
 {
-
+    protected int | string | array $columnSpan = 'full'; // ⬅️ Tambahkan ini
 
     public function getStats(): array
     {

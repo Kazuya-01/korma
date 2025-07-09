@@ -10,6 +10,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Tables\Actions\Action;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -114,9 +115,49 @@ class KegiatanResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
+            ])
+            ->headerActions([
+                Action::make('Cetak Laporan PDF')
+                    ->label('Cetak PDF')
+                    ->icon('heroicon-o-printer')
+                    ->form([
+                        Forms\Components\Select::make('bulan')
+                            ->label('Bulan')
+                            ->options([
+                                '1' => 'Januari',
+                                '2' => 'Februari',
+                                '3' => 'Maret',
+                                '4' => 'April',
+                                '5' => 'Mei',
+                                '6' => 'Juni',
+                                '7' => 'Juli',
+                                '8' => 'Agustus',
+                                '9' => 'September',
+                                '10' => 'Oktober',
+                                '11' => 'November',
+                                '12' => 'Desember',
+                            ])
+                            ->default(date('n'))
+                            ->required(),
+
+                        Forms\Components\Select::make('tahun')
+                            ->label('Tahun')
+                            ->options(array_combine(range(date('Y'), date('Y') - 5), range(date('Y'), date('Y') - 5)))
+                            ->default(date('Y'))
+                            ->required(),
+                    ])
+                    ->action(function (array $data) {
+                        $query = http_build_query([
+                            'periode' => 'bulanan',
+                            'bulan' => $data['bulan'],
+                            'tahun' => $data['tahun'],
+                        ]);
+                        return redirect('/laporan/kegiatan/export?' . $query);
+                    })
+                    ->openUrlInNewTab()
+                    ->color('gray'),
             ]);
     }
-
 
     public static function getRelations(): array
     {

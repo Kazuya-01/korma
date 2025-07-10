@@ -37,6 +37,12 @@ class PengaturanResource extends Resource
 
     public static function table(Table $table): Table
     {
+        Tables\Columns\ImageColumn::make('logo')
+            ->label('Logo')
+            ->disk('public')
+            ->height(40)
+            ->circular()
+            ->default(fn($record) => $record->logo ? asset('storage/' . $record->logo) : null);
         return $table->columns([
             Tables\Columns\TextColumn::make('nama_organisasi')->label('Nama'),
             Tables\Columns\ImageColumn::make('logo')->label('Logo')->disk('public')->height(40),

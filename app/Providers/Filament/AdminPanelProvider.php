@@ -10,6 +10,7 @@ use App\Filament\Resources\PengaturanResource;
 use App\Filament\Widgets\WelcomeWidget;
 use App\Filament\Widgets\RekapKeuangan;
 use App\Filament\Widgets\RekapAnggota;
+use App\Filament\Widgets\KalenderKegiatan;
 use App\Models\Pengaturan;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -34,24 +35,23 @@ class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+        $pengaturan = Pengaturan::first();
+
         return $panel
             ->id('admin')
             ->path('admin')
             ->colors([
                 'primary' => Color::Amber,
             ])
-            ->brandName(function () {
-                return Pengaturan::first()?->nama_organisasi ?? 'Laravel';
-            })
-            ->brandLogo(function () {
-                $logoPath = Pengaturan::first()?->logo;
+            ->brandName($pengaturan?->nama_organisasi ?? 'KORMA Al Manshuriyah')
+            ->brandLogo(
+                $pengaturan?->logo
+                    ? Storage::url($pengaturan->logo)
+                    : null // fallback logo
+            )
+            
 
-                return $logoPath
-                    ? Storage::url($logoPath)
-                    : null; // fallback ke default jika kosong
-            })
-
-            ->login() // untuk login default
+            ->login()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
@@ -69,6 +69,7 @@ class AdminPanelProvider extends PanelProvider
                 WelcomeWidget::class,
                 RekapKeuangan::class,
                 RekapAnggota::class,
+                KalenderKegiatan::class,
                 // AccountWidget::class,
                 // FilamentInfoWidget::class,
             ])

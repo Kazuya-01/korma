@@ -5,6 +5,7 @@ use App\Http\Controllers\LaporanKeuanganController;
 use App\Http\Controllers\LaporanKegiatanController;
 use App\Http\Controllers\ExportAnggotaController;
 
+
 Route::get('/', function () {
     return redirect()->route('filament.admin.auth.login');
 });

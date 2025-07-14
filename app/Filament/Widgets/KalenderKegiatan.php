@@ -14,29 +14,29 @@ class KalenderKegiatan extends CalendarWidget
     protected static bool $isLazy = false;
 
     public function getEvents(array $fetchInfo = []): Collection|array
-{
-    $today = now()->toDateString(); // tanggal hari ini, tanpa jam
+    {
+        $today = now()->toDateString(); // tanggal hari ini, tanpa jam
 
-    return Kegiatan::all()->map(function ($kegiatan) use ($today) {
-        $tanggal = Carbon::parse($kegiatan->tanggal)->toDateString(); 
+        return Kegiatan::all()->map(function ($kegiatan) use ($today) {
+            $tanggal = Carbon::parse($kegiatan->tanggal)->toDateString();
 
-        // Default warna: kuning (belum terjadi)
-        $color = '#facc15';
+            // Default warna: kuning (belum terjadi)
+            $color = '#facc15';
 
-        if ($tanggal < $today) {
-            // Sudah lewat
-            $color = $kegiatan->terlaksana
-                ? '#16a34a' // hijau jika terlaksana
-                : '#f43f5e'; // merah jika tidak terlaksana
-        }
+            if ($tanggal < $today) {
+                // Sudah lewat
+                $color = $kegiatan->terlaksana
+                    ? '#16a34a' // hijau jika terlaksana
+                    : '#f43f5e'; // merah jika tidak terlaksana
+            }
 
-        return [
-            'title' => $kegiatan->nama_kegiatan,
-            'start' => $tanggal,
-            'end'   => Carbon::parse($tanggal)->addDay()->toDateString(),
-            'color' => $color,
-            'allDay' => true,
-        ];
-    });
-}
+            return [
+                'title' => $kegiatan->nama_kegiatan,
+                'start' => $tanggal,
+                'end'   => Carbon::parse($tanggal)->addDay()->toDateString(),
+                'color' => $color,
+                'allDay' => true,
+            ];
+        });
+    }
 }

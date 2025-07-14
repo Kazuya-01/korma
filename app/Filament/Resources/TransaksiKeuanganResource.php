@@ -12,6 +12,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Actions\Action;
+use Illuminate\Support\Facades\Auth;
 
 class TransaksiKeuanganResource extends Resource
 {
@@ -69,7 +70,7 @@ class TransaksiKeuanganResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-        ->defaultSort('tanggal', 'asc')
+            ->defaultSort('tanggal', 'asc')
             ->columns([
                 Tables\Columns\TextColumn::make('tanggal')->label('Tanggal')->date(),
 
@@ -148,6 +149,14 @@ class TransaksiKeuanganResource extends Resource
                         'class' => 'font-semibold tracking-wide',
                     ]),
             ]);
+    }
+
+
+    public static function canAccess(): bool
+    {
+        $user = Auth::user();
+
+        return $user && in_array($user->role, ['ketua', 'bendahara']);
     }
 
     public static function getPages(): array

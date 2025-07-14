@@ -9,6 +9,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class PengaturanResource extends Resource
 {
@@ -37,20 +38,29 @@ class PengaturanResource extends Resource
 
     public static function table(Table $table): Table
     {
-        Tables\Columns\ImageColumn::make('logo')
-            ->label('Logo')
-            ->disk('public')
-            ->height(40)
-            ->circular()
-            ->default(fn($record) => $record->logo ? asset('storage/' . $record->logo) : null);
-        return $table->columns([
-            Tables\Columns\TextColumn::make('nama_organisasi')->label('Nama'),
-            Tables\Columns\ImageColumn::make('logo')->label('Logo')->disk('public')->height(40),
-        ])
+        return $table
+            ->columns([
+                Tables\Columns\TextColumn::make('nama_organisasi')
+                    ->label('Nama'),
+
+                Tables\Columns\ImageColumn::make('logo')
+                    ->label('Logo')
+                    ->disk('public')
+                    ->circular()
+                    ->height(40)
+                    ->default(fn($record) => $record->logo ? asset('storage/' . $record->logo) : null),
+            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([]);
+    }
+
+    public static function canAccess(): bool
+    {
+        $user = Auth::user();
+
+        return $user && $user->role === 'ketua';
     }
 
     public static function getPages(): array

@@ -9,6 +9,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class UsulanKegiatanResource extends Resource
 {
@@ -88,6 +89,12 @@ class UsulanKegiatanResource extends Resource
             ]);
     }
 
+    public static function canAccess(): bool
+    {
+        $user = Auth::user();
+
+        return $user && in_array($user->role, ['ketua', 'wakil', 'sekretaris']);
+    }
     public static function getPages(): array
     {
         return [

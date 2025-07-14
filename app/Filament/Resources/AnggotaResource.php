@@ -10,6 +10,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -112,6 +113,13 @@ class AnggotaResource extends Resource
         return [
             //
         ];
+    }
+
+    public static function canAccess(): bool
+    {
+        $user = Auth::user();
+
+        return $user && in_array($user->role, ['ketua', 'sekretaris']);
     }
 
     public static function getPages(): array

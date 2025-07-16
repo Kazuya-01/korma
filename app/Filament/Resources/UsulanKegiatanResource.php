@@ -22,32 +22,47 @@ class UsulanKegiatanResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('nama_kegiatan')
-                    ->required()
-                    ->label('Nama Kegiatan'),
+        return $form->schema([
+            Forms\Components\TextInput::make('nama_kegiatan')
+                ->required()
+                ->label('Nama Kegiatan'),
 
-                Forms\Components\Textarea::make('deskripsi')
-                    ->label('Deskripsi'),
+            Forms\Components\Textarea::make('deskripsi')
+                ->label('Deskripsi')
+                ->rows(3),
 
-                Forms\Components\DatePicker::make('tanggal_usulan')
-                    ->label('Tanggal Diusulkan')
-                    ->required(),
+            Forms\Components\DatePicker::make('tanggal')
+                ->label('Tanggal')
+                ->required(),
 
-                Forms\Components\TextInput::make('pengusul')
-                    ->label('Nama Pengusul'),
+            Forms\Components\TextInput::make('lokasi')
+                ->label('Lokasi')
+                ->required(),
 
-                Forms\Components\Select::make('status')
-                    ->label('Status')
-                    ->options([
-                        'menunggu' => 'Menunggu',
-                        'disetujui' => 'Disetujui',
-                        'ditolak' => 'Ditolak',
-                    ])
-                    ->required()
-                    ->default('menunggu'),
-            ]);
+            Forms\Components\Select::make('kategori')
+                ->label('Kategori')
+                ->options([
+                    'kajian' => 'Kajian',
+                    'rapat' => 'Rapat',
+                    'lomba' => 'Lomba',
+                    'sosial' => 'Sosial',
+                    'lainnya' => 'Lainnya',
+                ])
+                ->required(),
+
+            Forms\Components\TextInput::make('pengusul')
+                ->label('Nama Pengusul'),
+
+            Forms\Components\Select::make('status')
+                ->label('Status')
+                ->options([
+                    'menunggu' => 'Menunggu',
+                    'disetujui' => 'Disetujui',
+                    'ditolak' => 'Ditolak',
+                ])
+                ->required()
+                ->default('menunggu'),
+        ]);
     }
 
     public static function table(Table $table): Table
@@ -56,11 +71,11 @@ class UsulanKegiatanResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('nama_kegiatan')->label('Kegiatan')->searchable(),
                 Tables\Columns\TextColumn::make('pengusul')->label('Pengusul')->searchable(),
-                Tables\Columns\TextColumn::make('tanggal_usulan')->label('Tanggal')->date(),
+                Tables\Columns\TextColumn::make('tanggal')->label('Tanggal')->date(),
                 Tables\Columns\BadgeColumn::make('status')
                     ->label('Status')
                     ->colors([
-                        'primary' => 'menunggu',
+                        'warning' => 'menunggu',
                         'success' => 'disetujui',
                         'danger' => 'ditolak',
                     ])
@@ -70,7 +85,6 @@ class UsulanKegiatanResource extends Resource
                         'ditolak' => 'Ditolak',
                         default => $state,
                     }),
-
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
@@ -91,10 +105,9 @@ class UsulanKegiatanResource extends Resource
 
     public static function canAccess(): bool
     {
-        $user = Auth::user();
-
-        return $user && in_array($user->role, ['ketua', 'wakil', 'sekretaris']);
+        return Auth::check() && in_array(Auth::user()->role, ['ketua', 'wakil', 'sekretaris']);
     }
+
     public static function getPages(): array
     {
         return [

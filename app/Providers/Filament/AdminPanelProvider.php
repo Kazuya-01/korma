@@ -4,13 +4,13 @@ namespace App\Providers\Filament;
 
 use App\Filament\Resources\AnggotaResource;
 use App\Filament\Resources\KegiatanResource;
-use App\Filament\Resources\UsulanKegiatanResource;
-use App\Filament\Resources\TransaksiKeuanganResource;
 use App\Filament\Resources\PengaturanResource;
-use App\Filament\Widgets\WelcomeWidget;
-use App\Filament\Widgets\RekapKeuangan;
-use App\Filament\Widgets\RekapAnggota;
+use App\Filament\Resources\TransaksiKeuanganResource;
+use App\Filament\Resources\UsulanKegiatanResource;
 use App\Filament\Widgets\KalenderKegiatan;
+use App\Filament\Widgets\RekapAnggota;
+use App\Filament\Widgets\RekapKeuangan;
+use App\Filament\Widgets\WelcomeWidget;
 use App\Models\Pengaturan;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -20,16 +20,13 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Widgets\AccountWidget;
-use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
-use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Illuminate\Support\Facades\Storage;
-
+use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -41,20 +38,17 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Emerald,
             ])
-            ->brandName($pengaturan?->nama_organisasi ?? 'KORMA Al Manshuriyah')
-            ->brandLogo(
-                $pengaturan?->logo
-                    ? Storage::url($pengaturan->logo)
-                    : null // fallback logo
-            )
-
+            ->sidebarCollapsibleOnDesktop()
+            ->brandName(fn () => $pengaturan?->nama_organisasi ?? 'KORMA Al Manshuriyah')
+            ->brandLogo(fn () => $pengaturan?->logo ? Storage::url($pengaturan->logo) : null)
 
             ->login()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
+
             ->resources([
                 KegiatanResource::class,
                 UsulanKegiatanResource::class,

@@ -9,9 +9,11 @@ class UsulanKegiatan extends Model
     protected $fillable = [
     'nama_kegiatan',
     'deskripsi',
-    'tanggal_usulan',
-    'pengusul',
+    'tanggal',
+    'lokasi',
+    'kategori',
     'status',
+    'pengusul',
 ];
 
 }

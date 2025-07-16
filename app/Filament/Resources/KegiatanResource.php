@@ -55,9 +55,9 @@ class KegiatanResource extends Resource
                     ])
                     ->required(),
 
-                Forms\Components\FileUpload::make('dokumentasi')
-                    ->label('Dokumentasi (Opsional)')
-                    ->directory('dokumentasi-kegiatan')
+                Forms\Components\FileUpload::make('foto')
+                    ->label('Foto Dokumentasi')
+                    ->directory('dokumentasi')
                     ->disk('public')
                     ->preserveFilenames()
                     ->image()
@@ -100,7 +100,7 @@ class KegiatanResource extends Resource
                     ->label('Status')
                     ->boolean(),
 
-                Tables\Columns\ImageColumn::make('dokumentasi')
+                Tables\Columns\ImageColumn::make('foto')
                     ->label('Dokumentasi')
                     ->disk('public')
                     ->height(40)

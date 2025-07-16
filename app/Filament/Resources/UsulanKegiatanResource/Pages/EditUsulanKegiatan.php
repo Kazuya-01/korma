@@ -13,19 +13,18 @@ class EditUsulanKegiatan extends EditRecord
     protected function afterSave(): void
     {
         if ($this->record->status === 'disetujui') {
-            // Cek apakah sudah pernah ditambahkan ke tabel kegiatan
             $exists = Kegiatan::where('nama_kegiatan', $this->record->nama_kegiatan)
-                ->where('tanggal', $this->record->tanggal_usulan)
+                ->whereDate('tanggal', $this->record->tanggal)
                 ->exists();
 
             if (! $exists) {
                 Kegiatan::create([
                     'nama_kegiatan' => $this->record->nama_kegiatan,
                     'deskripsi'     => $this->record->deskripsi,
-                    'tanggal'       => $this->record->tanggal_usulan,
+                    'tanggal'       => $this->record->tanggal,
                     'waktu'         => '00:00:00', // default
-                    'lokasi'        => null,
-                    'kategori'      => 'lainnya',
+                    'lokasi'        => $this->record->lokasi,
+                    'kategori'      => $this->record->kategori ?? 'lainnya',
                     'terlaksana'    => false,
                 ]);
             }

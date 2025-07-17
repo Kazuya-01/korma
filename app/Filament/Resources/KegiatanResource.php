@@ -84,7 +84,8 @@ class KegiatanResource extends Resource
                     ->date(),
 
                 Tables\Columns\TextColumn::make('waktu')
-                    ->label('Waktu'),
+                    ->label('Waktu')
+                    ->time('H:i'),
 
                 Tables\Columns\TextColumn::make('kategori')
                     ->badge()

@@ -10,6 +10,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
+use Filament\Tables\Actions\Action;
 
 class UsulanKegiatanResource extends Resource
 {
@@ -24,20 +25,23 @@ class UsulanKegiatanResource extends Resource
     {
         return $form->schema([
             Forms\Components\TextInput::make('nama_kegiatan')
+                ->label('Nama Kegiatan')
                 ->required()
-                ->label('Nama Kegiatan'),
+                ->maxLength(255),
 
             Forms\Components\Textarea::make('deskripsi')
                 ->label('Deskripsi')
-                ->rows(3),
+                ->rows(4)
+                ->nullable(),
 
             Forms\Components\DatePicker::make('tanggal')
-                ->label('Tanggal')
+                ->label('Tanggal Usulan')
                 ->required(),
 
             Forms\Components\TextInput::make('lokasi')
                 ->label('Lokasi')
-                ->required(),
+                ->required()
+                ->maxLength(255),
 
             Forms\Components\Select::make('kategori')
                 ->label('Kategori')
@@ -49,12 +53,22 @@ class UsulanKegiatanResource extends Resource
                     'lainnya' => 'Lainnya',
                 ])
                 ->required(),
+                Forms\Components\TimePicker::make('waktu')
+    ->label('Waktu')
+    ->required(),
 
             Forms\Components\TextInput::make('pengusul')
-                ->label('Nama Pengusul'),
+                ->label('Nama Pengusul')
+                ->required()
+                ->maxLength(255),
+
+            Forms\Components\TextInput::make('nomor_anggota')
+                ->label('Nomor Anggota')
+                ->required()
+                ->maxLength(50),
 
             Forms\Components\Select::make('status')
-                ->label('Status')
+                ->label('Status Usulan')
                 ->options([
                     'menunggu' => 'Menunggu',
                     'disetujui' => 'Disetujui',
@@ -65,13 +79,28 @@ class UsulanKegiatanResource extends Resource
         ]);
     }
 
+
+
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('nama_kegiatan')->label('Kegiatan')->searchable(),
-                Tables\Columns\TextColumn::make('pengusul')->label('Pengusul')->searchable(),
+                Tables\Columns\TextColumn::make('nama_kegiatan')
+                    ->label('Nama Kegiatan')
+                    ->searchable()
+                    ->limit(30)
+                    ->action(fn($record) => $record),
+                Tables\Columns\TextColumn::make('pengusul')
+                    ->label('Pengusul')
+                    ->limit(20)
+                    ->action(fn($record) => $record),
+                Tables\Columns\TextColumn::make('nomor_anggota')
+                ->label('Nomor Anggota')
+                ->searchable()
+                ->sortable(),
                 Tables\Columns\TextColumn::make('tanggal')->label('Tanggal')->date(),
+                Tables\Columns\TextColumn::make('waktu')->label('Waktu'),
+                Tables\Columns\TextColumn::make('kategori')->label('Kategori')->badge()->color('gray'),
                 Tables\Columns\BadgeColumn::make('status')
                     ->label('Status')
                     ->colors([
@@ -79,24 +108,50 @@ class UsulanKegiatanResource extends Resource
                         'success' => 'disetujui',
                         'danger' => 'ditolak',
                     ])
-                    ->formatStateUsing(fn(string $state): string => match ($state) {
-                        'menunggu' => 'Menunggu',
-                        'disetujui' => 'Disetujui',
-                        'ditolak' => 'Ditolak',
-                        default => $state,
-                    }),
-            ])
-            ->filters([
-                Tables\Filters\SelectFilter::make('status')
-                    ->options([
-                        'menunggu' => 'Menunggu',
-                        'disetujui' => 'Disetujui',
-                        'ditolak' => 'Ditolak',
-                    ]),
+                    ->formatStateUsing(fn($state) => ucfirst($state)),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Action::make('ubah_status')
+                    ->label('Ubah Status')
+                    ->icon('heroicon-o-pencil-square')
+                    ->modalHeading('Ubah Status Usulan')
+                    ->modalSubmitActionLabel('Simpan')
+                    ->mountUsing(fn($form, UsulanKegiatan $record) => $form->fill([
+                        'status' => $record->status,
+                    ]))
+                    ->form([
+                        Forms\Components\Select::make('status')
+                            ->label('Status')
+                            ->options([
+                                'menunggu' => 'Menunggu',
+                                'disetujui' => 'Disetujui',
+                                'ditolak' => 'Ditolak',
+                            ])
+                            ->required(),
+                    ])
+                    ->action(function (array $data, UsulanKegiatan $record): void {
+                        $record->update(['status' => $data['status']]);
+
+                        if ($data['status'] === 'disetujui') {
+                            // Cek apakah sudah pernah dimigrasi ke kegiatan
+                            $sudahAda = \App\Models\Kegiatan::where('nama_kegiatan', $record->nama_kegiatan)
+                                ->where('tanggal', $record->tanggal)
+                                ->first();
+
+                            if (!$sudahAda) {
+                                \App\Models\Kegiatan::create([
+                                    'nama_kegiatan' => $record->nama_kegiatan,
+                                    'deskripsi'     => $record->deskripsi,
+                                    'tanggal'       => $record->tanggal,
+                                    'lokasi'        => $record->lokasi,
+                                    'kategori'      => $record->kategori,
+                                   'waktu' => $record->waktu && $record->waktu !== '' ? $record->waktu : '00:00',
+                                    'terlaksana'    => false,
+                                ]);
+                            }
+                        }
+                    })
+                    ->visible(fn() => Auth::user() && in_array(Auth::user()->role, ['ketua', 'wakil', 'sekretaris'])),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),

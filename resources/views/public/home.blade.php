@@ -87,7 +87,7 @@
                                         {{ ($kegiatan->currentPage() - 1) * $kegiatan->perPage() + $loop->iteration }}</td>
                                     <td>{{ $item->nama_kegiatan }}</td>
                                     <td>{{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d F Y') }}</td>
-                                    <td>{{ $item->waktu }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($item->waktu)->format('H:i') }}</td>
                                     <td>{{ $item->lokasi }}</td>
                                     <td class="text-center">
                                         @if ($item->terlaksana)
@@ -157,6 +157,16 @@
                                 </div>
 
                                 <div class="col-md-6">
+                                    <label for="nomor_anggota" class="form-label">Nomor Anggota</label>
+                                    <input type="text" name="nomor_anggota" id="nomor_anggota"
+                                        class="form-control @error('nomor_anggota') is-invalid @enderror"
+                                        value="{{ old('nomor_anggota') }}" required>
+                                    @error('nomor_anggota')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="col-md-6">
                                     <label for="nama_kegiatan" class="form-label">Nama Kegiatan</label>
                                     <input type="text" name="nama_kegiatan" id="nama_kegiatan"
                                         class="form-control @error('nama_kegiatan') is-invalid @enderror"
@@ -175,7 +185,15 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-
+                                <div class="col-md-6">
+                                    <label for="waktu" class="form-label">Waktu Kegiatan</label>
+                                    <input type="time" name="waktu" id="waktu"
+                                        class="form-control @error('waktu') is-invalid @enderror"
+                                        value="{{ old('waktu') }}" required>
+                                    @error('waktu')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
                                 <div class="col-md-6">
                                     <label for="lokasi" class="form-label">Lokasi</label>
                                     <input type="text" name="lokasi" id="lokasi"

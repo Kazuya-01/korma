@@ -11,15 +11,19 @@ class RekapAnggota extends BaseWidget
     protected function getStats(): array
     {
         $total = Anggota::count();
-        $ketua = Anggota::where('jabatan', 'Ketua')->count();
-        $sekretaris = Anggota::where('jabatan', 'Sekretaris')->count();
-        $umum = Anggota::where('jabatan', 'Umum')->count();
+        $ketua = Anggota::where('jabatan', 'ketua')->count();
+        $wakil = Anggota::where('jabatan', 'wakil')->count();
+        $sekretaris = Anggota::where('jabatan', 'sekretaris')->count();
+        $bendahara = Anggota::where('jabatan', 'bendahara')->count();
+        $umum = Anggota::where('jabatan', 'anggota')->count();
 
         return [
             Stat::make('Total Anggota', $total)->color('primary'),
             Stat::make('Ketua', $ketua)->color('success'),
+            Stat::make('Wakil', $wakil)->color('success'),
             Stat::make('Sekretaris', $sekretaris)->color('info'),
-            Stat::make('Umum', $umum)->color('gray'),
+            Stat::make('Bendahara', $bendahara)->color('warning'),
+            Stat::make('Anggota', $umum)->color('gray'),
         ];
     }
 }

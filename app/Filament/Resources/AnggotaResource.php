@@ -29,13 +29,19 @@ class AnggotaResource extends Resource
 
             Forms\Components\Select::make('jabatan')
                 ->options([
-                    'Ketua' => 'Ketua',
-                    'Wakil' => 'Wakil',
-                    'Sekretaris' => 'Sekretaris',
-                    'Bendahara' => 'Bendahara',
-                    'Umum' => 'Umum',
+                    'ketua' => 'Ketua',
+                    'wakil' => 'Wakil',
+                    'sekretaris' => 'Sekretaris',
+                    'bendahara' => 'Bendahara',
+                    'anggota' => 'Anggota',
                 ])
                 ->required(),
+
+            Forms\Components\TextInput::make('nomor_anggota')
+                ->label('Nomor Anggota')
+                ->required()
+                ->unique(ignorable: fn ($record) => $record)
+                ->maxLength(50),
 
             Forms\Components\TextInput::make('kontak')
                 ->label('Kontak (HP / Email)')
@@ -64,26 +70,33 @@ class AnggotaResource extends Resource
                 Tables\Columns\TextColumn::make('nama')->searchable(),
 
                 Tables\Columns\TextColumn::make('jabatan')
+                    ->label('Jabatan')
                     ->badge()
                     ->color(fn(string $state) => match ($state) {
-                        'Ketua' => 'success',
-                        'Wakil' => 'info',
-                        'Sekretaris' => 'warning',
-                        'Bendahara' => 'danger',
+                        'ketua' => 'success',
+                        'wakil' => 'info',
+                        'sekretaris' => 'warning',
+                        'bendahara' => 'danger',
                         default => 'gray',
-                    }),
+                    })
+                    ->formatStateUsing(fn(string $state) => ucfirst($state)),
+
+                Tables\Columns\TextColumn::make('nomor_anggota')
+                    ->label('Nomor Anggota')
+                    ->searchable(),
 
                 Tables\Columns\TextColumn::make('kontak')
                     ->label('Kontak'),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('jabatan')
+                    ->label('Filter Jabatan')
                     ->options([
-                        'Ketua' => 'Ketua',
-                        'Wakil' => 'Wakil',
-                        'Sekretaris' => 'Sekretaris',
-                        'Bendahara' => 'Bendahara',
-                        'Umum' => 'Umum',
+                        'ketua' => 'Ketua',
+                        'wakil' => 'Wakil',
+                        'sekretaris' => 'Sekretaris',
+                        'bendahara' => 'Bendahara',
+                        'anggota' => 'Anggota',
                     ]),
             ])
             ->headerActions([
@@ -110,15 +123,12 @@ class AnggotaResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function canAccess(): bool
     {
         $user = Auth::user();
-
         return $user && in_array($user->role, ['ketua', 'sekretaris']);
     }
 

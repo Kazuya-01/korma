@@ -11,6 +11,7 @@
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -62,8 +63,39 @@
             font-size: 0.8rem;
             padding: 3px 8px;
         }
+
+        .auto-scroll-wrapper {
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+        }
+
+        .auto-scroll-track {
+            display: flex;
+            width: max-content;
+            animation: scroll-left 30s linear infinite;
+        }
+
+        .scroll-image {
+            flex: 0 0 auto;
+            width: 200px;
+            height: 150px;
+            margin-right: 20px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes scroll-left {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
     </style>
-    {{-- Tambahkan CSS tambahan jika ada --}}
 </head>
 
 <body>
@@ -92,8 +124,18 @@
         @yield('content')
     </main>
 
-    {{-- Footer (opsional) --}}
-
+    <!-- FOOTER -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container text-center">
+            <p class="mb-1">© {{ date('Y') }} KORMA Al Manshuriyah. Menyatukan Semangat, Mewujudkan Kebaikan.</p>
+            <p class="mb-0">
+                Dibina oleh Masjid Al Manshuriyah |
+                <a href="https://" class="text-white text-decoration-underline" target="_blank">
+                    Ikuti kami di Media sosial Tiktok
+                </a>
+            </p>
+        </div>
+    </footer>
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

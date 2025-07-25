@@ -5,6 +5,8 @@ use App\Http\Controllers\LaporanKeuanganController;
 use App\Http\Controllers\LaporanKegiatanController;
 use App\Http\Controllers\ExportAnggotaController;
 use App\Http\Controllers\Public\UsulanKegiatanController;
+use Filament\Notifications\Notification;
+use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,4 +36,13 @@ Route::get('/export/anggota/pdf', [ExportAnggotaController::class, 'pdf'])
     ->name('export.anggota.pdf');
 
 
+Route::get('/tes-notifikasi', function () {
+    $user = \App\Models\User::find(1);
 
+    Notification::make()
+        ->title('Tes Notifikasi')
+        ->body('Notifikasi ini dikirim untuk menguji sistem.')
+        ->sendToDatabase($user);
+
+    return 'Notifikasi terkirim';
+});

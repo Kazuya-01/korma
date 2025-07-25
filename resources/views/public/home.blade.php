@@ -22,13 +22,38 @@
 
     <!-- TENTANG -->
     <section id="tentang" class="py-5" style="background: url('/images/pattern1.png') repeat; background-color: #e8f5e9;">
-        <div class="container text-center">
-            <h2 class="text-success mb-4">Tentang Kami</h2>
-            <p class="mx-auto" style="max-width: 800px;">
-                KORMA (Komunitas Remaja Masjid Al Manshuriyah) adalah organisasi kepemudaan masjid yang berfokus pada
-                kegiatan keagamaan, sosial kemasyarakatan, dan pemberdayaan remaja secara positif di lingkungan Masjid Al
-                Manshuriyah.
+        <div class="container">
+            <h2 class="text-success text-center mb-4">Tentang Kami</h2>
+
+            <p class="mx-auto"
+                style="max-width: 850px; text-align: justify; line-height: 1.8; font-size: 1.05rem; margin-bottom: 50px;">
+                KORMA (Komunitas Remaja Masjid Al Manshuriyah) adalah sebuah organisasi kepemudaan yang berada di bawah
+                naungan Masjid Al Manshuriyah. Komunitas ini dibentuk sebagai wadah untuk menyalurkan semangat, kreativitas,
+                serta potensi remaja dalam berbagai kegiatan yang bersifat positif, konstruktif, dan bermanfaat bagi
+                masyarakat. Fokus utama KORMA mencakup pengembangan kegiatan keagamaan seperti pengajian, kajian Islam, dan
+                pelatihan keagamaan; kegiatan sosial seperti bakti sosial, santunan anak yatim, dan gotong royong
+                lingkungan; serta kegiatan pemberdayaan remaja melalui pelatihan keterampilan, seminar motivasi, dan
+                kegiatan edukatif lainnya.
+
+                Melalui kegiatan-kegiatan tersebut, KORMA berkomitmen untuk menciptakan generasi muda yang tidak hanya aktif
+                secara spiritual, tetapi juga memiliki kepedulian sosial yang tinggi, mampu bekerja sama dalam tim, dan siap
+                menjadi pemimpin masa depan yang berakhlak mulia. Keberadaan KORMA juga diharapkan mampu menjadi jembatan
+                yang menghubungkan masjid dengan para remaja, agar mereka lebih dekat dengan lingkungan masjid dan
+                menjadikan masjid sebagai pusat kegiatan yang menyenangkan, produktif, dan inspiratif.
             </p>
+
+            <!-- Galeri Auto Geser -->
+            <div class="auto-scroll-wrapper">
+                <div class="auto-scroll-track">
+                    @for ($i = 0; $i < 2; $i++)
+                        <img src="{{ asset('images/tentang1.jpg') }}" alt="Gambar 1" class="scroll-image">
+                        <img src="{{ asset('images/tentang2.jpg') }}" alt="Gambar 2" class="scroll-image">
+                        <img src="{{ asset('images/tentang3.jpg') }}" alt="Gambar 3" class="scroll-image">
+                        <img src="{{ asset('images/tentang4.jpg') }}" alt="Gambar 4" class="scroll-image">
+                        <img src="{{ asset('images/tentang5.jpg') }}" alt="Gambar 5" class="scroll-image">
+                    @endfor
+                </div>
+            </div>
         </div>
     </section>
 
@@ -133,11 +158,20 @@
 
             {{-- Notifikasi --}}
             @if (session('success'))
-                <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
-                    {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: '{{ session('success') }}',
+                            confirmButtonColor: '#28a745',
+                            timer: 3000,
+                            showConfirmButton: false
+                        });
+                    });
+                </script>
             @endif
+
 
             <div class="row justify-content-center">
                 <div class="col-lg-8">
@@ -257,6 +291,29 @@
             }, 5000);
         }
     </script>
+    <script>
+        const form = document.querySelector('form');
+        if (form) {
+            form.addEventListener('submit', () => {
+                const submitButton = form.querySelector('[type="submit"]');
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<i class="bi bi-send-check"></i> Mengirim...';
+            });
+        }
+    </script>
+    @if ($errors->any())
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    html: `{!! implode('<br>', $errors->all()) !!}`,
+                    confirmButtonColor: '#dc3545'
+                });
+            });
+        </script>
+    @endif
+
     <!-- KONTAK -->
     <section id="kontak" class="py-5"
         style="background: url('/images/pattern4.png') repeat; background-color: #f1f9f1;">

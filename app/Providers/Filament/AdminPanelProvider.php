@@ -40,6 +40,7 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Emerald,
             ])
+            ->spa()
             ->sidebarCollapsibleOnDesktop()
             ->brandName(fn () => $pengaturan?->nama_organisasi ?? 'KORMA Al Manshuriyah')
             ->brandLogo(fn () => $pengaturan?->logo ? Storage::url($pengaturan->logo) : null)

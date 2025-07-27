@@ -3,25 +3,31 @@
 @section('content')
 
     <!-- HERO SECTION / HOME -->
-    <section id="beranda" class="text-white"
+    <section id="home" class="text-white d-flex align-items-center justify-content-center text-center"
         style="
-    background: url('/images/bg.jpg') no-repeat center center;
-    background-size: cover;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 100px 20px;
-">
-        <div class="container text-center">
-            <h1 class="display-4 fw-bold">Selamat Datang di KORMA Al Manshuriyah</h1>
-            <p class="lead">Organisasi Remaja Masjid yang aktif dalam kegiatan sosial, keagamaan, dan pengembangan pemuda.
+        background: url('/images/bg.jpg') no-repeat center center;
+        background-size: cover;
+        min-height: 100vh;
+        padding: 100px 20px;
+        position: relative;
+    ">
+        <!-- Overlay gelap agar teks lebih terbaca -->
+        <div
+            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1;">
+        </div>
+
+        <div class="container position-relative" style="z-index: 2;">
+            <h1 class="display-4 fw-bold text-white">Selamat Datang di</h1>
+            <h2 class="fw-bold" style="color: #fdd835;">KORMA Al Manshuriyah</h2>
+            <p class="lead text-white mt-3">
+                Organisasi Remaja Masjid yang aktif dalam kegiatan sosial, keagamaan, dan pengembangan pemuda.
             </p>
         </div>
     </section>
 
     <!-- TENTANG -->
-    <section id="tentang" class="py-5" style="background: url('/images/pattern1.png') repeat; background-color: #e8f5e9;">
+    <section id="tentang" class="py-5"
+        style="background: url('/images/pattern1.png') repeat; background-color: ##f1f8f4;">
         <div class="container">
             <h2 class="text-success text-center mb-4">Tentang Kami</h2>
 
@@ -64,9 +70,9 @@
             <h2 class="text-success text-center mb-4">Daftar Kegiatan</h2>
 
             {{-- Filter --}}
-            <form method="GET" class="row justify-content-center mb-4">
-                <div class="col-md-3 mb-2">
-                    <select name="bulan" class="form-select">
+            <form method="GET" class="row justify-content-center g-2 mb-4">
+                <div class="col-md-3 col-12">
+                    <select name="bulan" class="form-select shadow-sm rounded">
                         <option value="">-- Pilih Bulan --</option>
                         @for ($i = 1; $i <= 12; $i++)
                             <option value="{{ $i }}" {{ request('bulan') == $i ? 'selected' : '' }}>
@@ -75,27 +81,29 @@
                         @endfor
                     </select>
                 </div>
-                <div class="col-md-3 mb-2">
-                    <select name="tahun" class="form-select">
+                <div class="col-md-3 col-12">
+                    <select name="tahun" class="form-select shadow-sm rounded">
                         <option value="">-- Pilih Tahun --</option>
                         @for ($y = date('Y'); $y >= 2020; $y--)
                             <option value="{{ $y }}" {{ request('tahun') == $y ? 'selected' : '' }}>
-                                {{ $y }}</option>
+                                {{ $y }}
+                            </option>
                         @endfor
                     </select>
                 </div>
-                <div class="col-md-2 mb-2">
-                    <button type="submit" class="btn btn-success w-100">
-                        <i class="bi bi-funnel-fill"></i> Filter
+                <div class="col-md-2 col-12">
+                    <button type="submit" class="btn btn-success w-100 shadow-sm">
+                        <i class="bi bi-funnel-fill me-1"></i> Filter
                     </button>
                 </div>
             </form>
+
             {{-- Tabel Kegiatan --}}
             @if ($kegiatan->count())
                 <div class="table-responsive">
-                    <table class="table table-bordered align-middle table-hover">
-                        <thead class="table-success">
-                            <tr class="text-center">
+                    <table class="table table-bordered table-striped table-hover align-middle shadow-sm">
+                        <thead class="table-success text-center">
+                            <tr>
                                 <th>No</th>
                                 <th>Nama</th>
                                 <th>Tanggal</th>
@@ -109,28 +117,31 @@
                             @foreach ($kegiatan as $index => $item)
                                 <tr>
                                     <td class="text-center">
-                                        {{ ($kegiatan->currentPage() - 1) * $kegiatan->perPage() + $loop->iteration }}</td>
+                                        {{ ($kegiatan->currentPage() - 1) * $kegiatan->perPage() + $loop->iteration }}
+                                    </td>
                                     <td>{{ $item->nama_kegiatan }}</td>
                                     <td>{{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d F Y') }}</td>
                                     <td>{{ \Carbon\Carbon::parse($item->waktu)->format('H:i') }}</td>
                                     <td>{{ $item->lokasi }}</td>
                                     <td class="text-center">
                                         @if ($item->terlaksana)
-                                            <span class="badge bg-success">Terlaksana</span>
+                                            <span class="badge bg-success px-3 py-2 rounded-pill">Terlaksana</span>
                                         @else
-                                            <span class="badge bg-danger">Belum</span>
+                                            <span class="badge bg-danger px-3 py-2 rounded-pill">Belum</span>
                                         @endif
                                     </td>
                                     <td class="text-center">
                                         @if ($item->foto)
                                             <img src="{{ asset('storage/' . $item->foto) }}" alt="Foto"
-                                                style="width: 60px; border-radius: 6px;"><br>
+                                                class="img-thumbnail mb-2"
+                                                style="width: 70px; height: 70px; object-fit: cover; border-radius: 0.5rem;">
+                                            <br>
                                             <a href="{{ asset('storage/' . $item->foto) }}"
-                                                class="btn btn-sm btn-primary mt-1" download>
-                                                <i class="bi bi-download"></i>
+                                                class="btn btn-sm btn-outline-primary rounded-pill" download>
+                                                <i class="bi bi-download"></i> Unduh
                                             </a>
                                         @else
-                                            -
+                                            <span class="text-muted">Tidak Ada</span>
                                         @endif
                                     </td>
                                 </tr>
@@ -140,11 +151,11 @@
                 </div>
 
                 {{-- Pagination --}}
-                <div class="mt-3 d-flex justify-content-center">
+                <div class="mt-4 d-flex justify-content-center">
                     {{ $kegiatan->links('pagination::bootstrap-5') }}
                 </div>
             @else
-                <div class="alert alert-info text-center">
+                <div class="alert alert-info text-center shadow-sm">
                     Tidak ada kegiatan untuk filter yang dipilih.
                 </div>
             @endif
@@ -152,9 +163,9 @@
     </section>
 
     {{-- Form Usulan Kegiatan --}}
-    <section id="usulan" class="py-5 bg-white">
+    <section id="usulan" class="py-5 bg-light">
         <div class="container">
-            <h2 class="text-center mb-4">Usulkan Kegiatan</h2>
+            <h2 class="text-center mb-5 fw-bold">📝 Usulkan Kegiatan</h2>
 
             {{-- Notifikasi --}}
             @if (session('success'))
@@ -172,16 +183,15 @@
                 </script>
             @endif
 
-
             <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="card shadow-sm border-0">
+                <div class="col-lg-10 col-xl-8">
+                    <div class="card shadow border-0 rounded-4">
                         <div class="card-body p-4">
-                            <form method="POST" action="{{ url('/usulan') }}" class="row g-3">
+                            <form method="POST" action="{{ url('/usulan') }}" class="row g-4">
                                 @csrf
 
                                 <div class="col-md-6">
-                                    <label for="pengusul" class="form-label">Nama Pengusul</label>
+                                    <label for="pengusul" class="form-label fw-semibold">Nama Pengusul</label>
                                     <input type="text" name="pengusul" id="pengusul"
                                         class="form-control @error('pengusul') is-invalid @enderror"
                                         value="{{ old('pengusul') }}" required>
@@ -191,7 +201,7 @@
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label for="nomor_anggota" class="form-label">Nomor Anggota</label>
+                                    <label for="nomor_anggota" class="form-label fw-semibold">Nomor Anggota</label>
                                     <input type="text" name="nomor_anggota" id="nomor_anggota"
                                         class="form-control @error('nomor_anggota') is-invalid @enderror"
                                         value="{{ old('nomor_anggota') }}" required>
@@ -201,7 +211,7 @@
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label for="nama_kegiatan" class="form-label">Nama Kegiatan</label>
+                                    <label for="nama_kegiatan" class="form-label fw-semibold">Nama Kegiatan</label>
                                     <input type="text" name="nama_kegiatan" id="nama_kegiatan"
                                         class="form-control @error('nama_kegiatan') is-invalid @enderror"
                                         value="{{ old('nama_kegiatan') }}" required>
@@ -211,7 +221,7 @@
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label for="tanggal" class="form-label">Tanggal Usulan</label>
+                                    <label for="tanggal" class="form-label fw-semibold">Tanggal Usulan</label>
                                     <input type="date" name="tanggal" id="tanggal"
                                         class="form-control @error('tanggal') is-invalid @enderror"
                                         value="{{ old('tanggal') }}" required>
@@ -219,8 +229,9 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
+
                                 <div class="col-md-6">
-                                    <label for="waktu" class="form-label">Waktu Kegiatan</label>
+                                    <label for="waktu" class="form-label fw-semibold">Waktu Kegiatan</label>
                                     <input type="time" name="waktu" id="waktu"
                                         class="form-control @error('waktu') is-invalid @enderror"
                                         value="{{ old('waktu') }}" required>
@@ -228,8 +239,9 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
+
                                 <div class="col-md-6">
-                                    <label for="lokasi" class="form-label">Lokasi</label>
+                                    <label for="lokasi" class="form-label fw-semibold">Lokasi</label>
                                     <input type="text" name="lokasi" id="lokasi"
                                         class="form-control @error('lokasi') is-invalid @enderror"
                                         value="{{ old('lokasi') }}">
@@ -239,7 +251,7 @@
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label for="kategori" class="form-label">Kategori</label>
+                                    <label for="kategori" class="form-label fw-semibold">Kategori</label>
                                     <select name="kategori" id="kategori"
                                         class="form-select @error('kategori') is-invalid @enderror" required>
                                         <option value="">-- Pilih Kategori --</option>
@@ -260,19 +272,21 @@
                                 </div>
 
                                 <div class="col-12">
-                                    <label for="deskripsi" class="form-label">Deskripsi (Opsional)</label>
+                                    <label for="deskripsi" class="form-label fw-semibold">Deskripsi (Opsional)</label>
                                     <textarea name="deskripsi" id="deskripsi" rows="4"
-                                        class="form-control @error('deskripsi') is-invalid @enderror">{{ old('deskripsi') }}</textarea>
+                                        class="form-control @error('deskripsi') is-invalid @enderror"
+                                        placeholder="Tuliskan informasi tambahan jika ada...">{{ old('deskripsi') }}</textarea>
                                     @error('deskripsi')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
 
-                                <div class="col-12 text-center">
-                                    <button type="submit" class="btn btn-success px-4">
-                                        <i class="bi bi-send-check"></i> Kirim Usulan
+                                <div class="col-12 text-center mt-3">
+                                    <button type="submit" class="btn btn-success btn-lg rounded-pill px-5 shadow-sm">
+                                        <i class="bi bi-send-check me-1"></i> Kirim Usulan
                                     </button>
                                 </div>
+
                             </form>
                         </div>
                     </div>
@@ -314,13 +328,63 @@
         </script>
     @endif
 
-    <!-- KONTAK -->
-    <section id="kontak" class="py-5"
-        style="background: url('/images/pattern4.png') repeat; background-color: #f1f9f1;">
-        <div class="container text-center">
-            <h2 class="text-success mb-4">Kontak Kami</h2>
-            <p>Email: <a href="mailto:kontak@korma.or.id">kontak@korma.or.id</a></p>
-            <p>Instagram: <a href="https://instagram.com/korma.manshuriyah" target="_blank">@korma.manshuriyah</a></p>
+    <!-- KONTAK KAMI -->
+    <section id="kontak" class="py-5" style="background: linear-gradient(to right, #f1f8f4;);">
+        <div class="container">
+            <!-- Judul -->
+            <div class="row justify-content-center text-center mb-5">
+                <div class="col-lg-8">
+                    <h2 class="text-success fw-bold">Kontak Kami</h2>
+                    <p class="text-muted">Hubungi kami melalui media sosial atau datang langsung ke lokasi kami.</p>
+                    <hr class="w-25 mx-auto">
+                </div>
+            </div>
+
+            <!-- Info Kontak -->
+            <div class="row g-4 justify-content-center text-center">
+                <div class="col-md-4">
+                    <div class="bg-white rounded shadow-sm p-4 h-100 border border-success-subtle">
+                        <i class="bi bi-envelope-fill text-success fs-1 mb-3"></i>
+                        <h5>Email</h5>
+                        <p><a href="mailto:kontak@korma.or.id" class="text-decoration-none">kontak@korma.or.id</a></p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="bg-white rounded shadow-sm p-4 h-100 border border-success-subtle">
+                        <i class="bi bi-instagram text-danger fs-1 mb-3"></i>
+                        <h5>Instagram</h5>
+                        <p><a href="https://instagram.com/korma.manshuriyah" target="_blank"
+                                class="text-decoration-none">@korma.manshuriyah</a></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- YouTube Embed -->
+            <div class="row mt-5 justify-content-center">
+                <div class="col-lg-10">
+                    <h5 class="text-success mb-3 text-center">Kegiatan Kami di YouTube</h5>
+                    <div class="ratio ratio-16x9 shadow-sm rounded border border-success-subtle">
+                        <iframe src="https://www.youtube.com/embed/YOUTUBE_VIDEO_ID" title="YouTube video"
+                            frameborder="0" allowfullscreen
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Google Maps Embed -->
+            <div class="row mt-5 justify-content-center">
+                <div class="col-lg-10">
+                    <h5 class="text-success mb-3 text-center">Lokasi Kami</h5>
+                    <div class="ratio ratio-16x9 shadow-sm rounded border border-success-subtle">
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1980.8902730566147!2d106.7574312704845!3d-6.796533990372944!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6833007af60f43%3A0x3f12dc595055420f!2sMasjid%20Almansyuriah!5e0!3m2!1sid!2sid!4v1753505234676!5m2!1sid!2sid"
+                            style="border:0;" allowfullscreen="" loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 

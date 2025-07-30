@@ -4,7 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LaporanKeuanganController;
 use App\Http\Controllers\LaporanKegiatanController;
 use App\Http\Controllers\ExportAnggotaController;
+use App\Http\Controllers\Public\PublicController;
 use App\Http\Controllers\Public\UsulanKegiatanController;
+use App\Models\Kegiatan;
 use Filament\Notifications\Notification;
 use App\Models\User;
 
@@ -15,7 +17,7 @@ use App\Models\User;
 */
 
 // Akses root diarahkan ke halaman publik
-Route::get('/', [\App\Http\Controllers\Public\PublicController::class, 'home'])->name('home');
+Route::get('/', [PublicController::class, 'index'])->name('home');
 Route::post('/usulan', [\App\Http\Controllers\Public\UsulanKegiatanController::class, 'store']);
 /*
 |--------------------------------------------------------------------------
@@ -36,13 +38,12 @@ Route::get('/export/anggota/pdf', [ExportAnggotaController::class, 'pdf'])
     ->name('export.anggota.pdf');
 
 
-Route::get('/tes-notifikasi', function () {
-    $user = \App\Models\User::find(1);
-
-    Notification::make()
-        ->title('Tes Notifikasi')
-        ->body('Notifikasi ini dikirim untuk menguji sistem.')
-        ->sendToDatabase($user);
-
-    return 'Notifikasi terkirim';
+Route::get('/api/kegiatan', function () {
+    return Kegiatan::all()->map(function ($kegiatan) {
+        return [
+            'title' => $kegiatan->nama_kegiatan,
+            'start' => $kegiatan->tanggal->format('Y-m-d') . 'T' . $kegiatan->waktu->format('H:i:s'),
+            'url' => '#', // bisa diubah untuk lihat detail
+        ];
+    });
 });

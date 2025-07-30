@@ -1,0 +1,146 @@
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f1f8f4;
+}
+
+section {
+    padding-top: 80px;
+    padding-bottom: 80px;
+    background-color: #f1f8f4;
+    margin-bottom: 60px;
+}
+
+.section-heading {
+    margin-bottom: 40px;
+}
+
+#calendar {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+}
+
+.fc-event,
+.fc-event-dot {
+    background-color: #28a745 !important;
+    border: none !important;
+    color: white !important;
+    font-weight: 500;
+}
+
+.fc-toolbar-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #155724;
+}
+
+.fc-button-primary {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.fc-button-primary:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+.auto-scroll-wrapper {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+}
+
+.auto-scroll-track {
+    display: flex;
+    width: max-content;
+    animation: scroll-left 30s linear infinite;
+}
+
+.scroll-image {
+    flex: 0 0 auto;
+    width: 200px;
+    height: 150px;
+    margin-right: 20px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes scroll-left {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+/* Hero Section */
+.hero-section {
+    background: url('/images/bg.jpg') no-repeat center center;
+    background-size: cover;
+    min-height: 100vh;
+    padding: 100px 20px;
+    position: relative;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+.hero-text {
+    z-index: 2;
+}
+
+.text-highlight {
+    color: #fdd835;
+}
+
+/* Tentang */
+.tentang-section {
+    background: url('/images/pattern1.png') repeat;
+    background-color: #f1f8f4;
+}
+
+.tentang-card {
+    background-color: rgba(255, 255, 255, 0.95);
+    max-width: 900px;
+}
+
+.tentang-text {
+    text-align: justify;
+    line-height: 1.8;
+    font-size: 1.05rem;
+}
+
+/* Kalender */
+.kegiatan-section {
+    background-color: #f1f8f4;
+}
+
+.calendar-container {
+    background-color: white;
+    padding: 1rem;
+    border-radius: .5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Usulan */
+.usulan-section {
+    background-color: #f1f8f4;
+}
+
+/* Kontak */
+.kontak-section {
+    background-color: #f1f8f4;
+}

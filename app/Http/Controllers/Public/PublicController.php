@@ -9,24 +9,29 @@ use Illuminate\Http\Request;
 class PublicController extends Controller
 {
 
-    public function home(Request $request)
+  public function index()
     {
-        $query = Kegiatan::query();
+        $events = Kegiatan::all()->map(function ($kegiatan) {
+            return [
+                'title' => $kegiatan->nama_kegiatan,
+               'start' => \Carbon\Carbon::parse($kegiatan->tanggal)->format('Y-m-d')
+            . 'T' . \Carbon\Carbon::parse($kegiatan->waktu)->format('H:i'),
+                'lokasi' => $kegiatan->lokasi,
+                'deskripsi' => $kegiatan->deskripsi,
+                'color' => match ($kegiatan->kategori) {
+                'kajian' => '#28a745',
+                'rapat' => '#007bff',
+                'lomba' => '#ffc107',
+                'sosial' => '#dc3545',
+                default => '#6c757d',
+            }
+            ];
+        });
 
-        if ($request->filled('bulan')) {
-            $query->whereMonth('tanggal', $request->bulan);
-        }
+        return view('public.home', [
+            'events' => $events,
+        ]);
 
-        if ($request->filled('tahun')) {
-            $query->whereYear('tanggal', $request->tahun);
-        }
+}
 
-        // Tampilkan mulai dari hari ini ke atas
-        $query->whereDate('tanggal', '>=', now());
-
-        // Ambil 5 data per halaman + simpan query filter-nya
-        $kegiatan = $query->orderBy('tanggal')->paginate(5)->withQueryString();
-
-        return view('public.home', compact('kegiatan'));
-    }
 }

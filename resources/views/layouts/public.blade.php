@@ -12,104 +12,52 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <!-- SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f1f8f4;;
-        }
-
-        section {
-            padding-top: 80px;
-            padding-bottom: 80px;
-            background-color: #f1f8f4;
-            margin-bottom: 60px;
-        }
-
-        .section-heading {
-            margin-bottom: 40px;
-        }
-
-        .table thead th {
-            vertical-align: middle;
-            text-align: center;
-            font-weight: 600;
-            background-color: #e9f5ec;
-            color: #155724;
-        }
-
-        .table td,
-        .table th {
-            text-align: center;
-            vertical-align: middle;
-            font-size: 0.95rem;
-            padding: 10px;
-        }
-
-        .table-hover tbody tr:hover {
-            background-color: #f2fdf6;
-        }
-
-        .badge {
-            font-size: 0.75rem;
-            padding: 5px 8px;
-            border-radius: 6px;
-        }
-
-        .table img {
-            width: 60px;
-            height: auto;
-            object-fit: cover;
-            border-radius: 5px;
-        }
-
-        .btn-download {
-            font-size: 0.8rem;
-            padding: 3px 8px;
-        }
-
-        .auto-scroll-wrapper {
-            overflow: hidden;
-            position: relative;
-            width: 100%;
-        }
-
-        .auto-scroll-track {
-            display: flex;
-            width: max-content;
-            animation: scroll-left 30s linear infinite;
-        }
-
-        .scroll-image {
-            flex: 0 0 auto;
-            width: 200px;
-            height: 150px;
-            margin-right: 20px;
-            object-fit: cover;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        @keyframes scroll-left {
-            0% {
-                transform: translateX(0);
-            }
-
-            100% {
-                transform: translateX(-50%);
-            }
-        }
-    </style>
+    <!-- File CSS Utama -->
+    <link rel="stylesheet" href="{{ asset('css/korma-style.css') }}">
+    <!-- FullCalendar CSS -->
+    <link href="https://unpkg.com/@fullcalendar/core@6.1.8/index.global.min.css" rel="stylesheet" />
+    <link href="https://unpkg.com/@fullcalendar/daygrid@6.1.8/index.global.min.css" rel="stylesheet" />
 </head>
 
 <body>
-
+    <!-- Modal Bootstrap -->
+    <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow-lg border-0 rounded-4">
+                <div class="modal-header bg-success text-white rounded-top-4">
+                    <h5 class="modal-title fw-semibold" id="eventModalLabel">
+                        <i class="bi bi-calendar-event me-2"></i> Detail Kegiatan
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4 bg-light">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item bg-transparent">
+                            <strong class="text-success">Nama Kegiatan:</strong> <span id="modalTitle"
+                                class="float-end text-dark fw-medium"></span>
+                        </li>
+                        <li class="list-group-item bg-transparent">
+                            <strong class="text-success">Waktu:</strong> <span id="modalTime"
+                                class="float-end text-dark fw-medium"></span>
+                        </li>
+                        <li class="list-group-item bg-transparent">
+                            <strong class="text-success">Lokasi:</strong> <span id="modalLocation"
+                                class="float-end text-dark fw-medium"></span>
+                        </li>
+                        <li class="list-group-item bg-transparent">
+                            <strong class="text-success">Deskripsi:</strong>
+                            <div id="modalDescription" class="mt-1 text-dark fw-medium"></div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- NAVBAR -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="#home">KORMA</a>
+            <a class="navbar-brand fw-bold">KORMA Al Manshuriyah</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -124,12 +72,10 @@
             </div>
         </div>
     </nav>
-
     <!-- KONTEN HALAMAN -->
     <main>
         @yield('content')
     </main>
-
     <!-- FOOTER -->
     <footer class="bg-dark text-white py-4">
         <div class="container text-center">
@@ -156,6 +102,16 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- FullCalendar JS -->
+    <script src="https://unpkg.com/@fullcalendar/core@6.1.8/index.global.min.js"></script>
+    <script src="https://unpkg.com/@fullcalendar/daygrid@6.1.8/index.global.min.js"></script>
+    <script src="https://unpkg.com/@fullcalendar/interaction@6.1.8/index.global.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Script Khusus Halaman Publik -->
+    <script src="{{ asset('js/public-page.js') }}"></script>
+
+
 </body>
 
 </html>

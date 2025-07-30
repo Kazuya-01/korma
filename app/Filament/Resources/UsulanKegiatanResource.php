@@ -111,6 +111,7 @@ class UsulanKegiatanResource extends Resource
                     ->formatStateUsing(fn($state) => ucfirst($state)),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Action::make('ubah_status')
                     ->label('Ubah Status')
                     ->icon('heroicon-o-pencil-square')

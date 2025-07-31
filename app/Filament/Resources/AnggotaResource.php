@@ -40,7 +40,7 @@ class AnggotaResource extends Resource
             Forms\Components\TextInput::make('nomor_anggota')
                 ->label('Nomor Anggota')
                 ->required()
-                ->unique(ignorable: fn ($record) => $record)
+                ->unique(ignorable: fn($record) => $record)
                 ->maxLength(50),
 
             Forms\Components\TextInput::make('kontak')
@@ -131,6 +131,11 @@ class AnggotaResource extends Resource
         $user = Auth::user();
         return $user && in_array($user->role, ['ketua', 'sekretaris']);
     }
+    public static function getNavigationGroup(): ?string
+    {
+        return '👥 Manajemen Anggota';
+    }
+
 
     public static function getPages(): array
     {

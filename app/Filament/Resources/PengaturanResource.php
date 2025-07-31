@@ -62,6 +62,10 @@ class PengaturanResource extends Resource
 
         return $user && $user->role === 'ketua';
     }
+    public static function getNavigationGroup(): ?string
+    {
+        return '⚙️ Pengaturan Sistem';
+    }
 
     public static function getPages(): array
     {

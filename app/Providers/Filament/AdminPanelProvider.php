@@ -37,19 +37,40 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->id('admin')
             ->path('admin')
+
+            // 🎨 Warna bawaan modern Filament v3
             ->colors([
                 'primary' => Color::Emerald,
+                'secondary' => Color::Cyan,
+                'success' => Color::Green,
+                'warning' => Color::Amber,
+                'danger' => Color::Rose,
+                'info' => Color::Blue,
             ])
+
+            // ⚡ SPA untuk transisi smooth
             ->spa()
-            ->sidebarCollapsibleOnDesktop()
+
+            // 🖼 Branding organisasi
             ->brandName(fn () => $pengaturan?->nama_organisasi ?? 'KORMA Al Manshuriyah')
             ->brandLogo(fn () => $pengaturan?->logo ? Storage::url($pengaturan->logo) : null)
+            ->brandLogoHeight('3rem')
+            ->favicon(fn () => $pengaturan?->logo ? Storage::url($pengaturan->logo) : null)
 
+            // 📂 Tata letak sidebar & konten
+            ->sidebarCollapsibleOnDesktop()
+            ->sidebarWidth('20rem')
+            ->maxContentWidth('7xl')
+
+            // 🔑 Login bawaan Filament
             ->login()
+
+            // 📌 Auto discovery Resource, Page, Widget
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
 
+            // 📚 Resource terdaftar
             ->resources([
                 KegiatanResource::class,
                 UsulanKegiatanResource::class,
@@ -57,17 +78,29 @@ class AdminPanelProvider extends PanelProvider
                 TransaksiKeuanganResource::class,
                 PengaturanResource::class,
             ])
+
+            // 📄 Pages
             ->pages([
                 Dashboard::class,
             ])
+
+            // 📊 Widget
             ->widgets([
                 WelcomeWidget::class,
                 RekapKeuangan::class,
                 RekapAnggota::class,
                 KalenderKegiatan::class,
-                // AccountWidget::class,
-                // FilamentInfoWidget::class,
             ])
+
+            // 📂 Grup Navigasi bawaan Filament v3
+            ->navigationGroups([
+                '📅 Manajemen Kegiatan',
+                '👥 Manajemen Anggota',
+                '💰 Keuangan',
+                '⚙️ Pengaturan Sistem',
+            ])
+
+            // 🛡 Middleware bawaan
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -79,6 +112,7 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
+
             ->authMiddleware([
                 Authenticate::class,
             ]);

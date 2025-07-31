@@ -123,36 +123,19 @@ class KegiatanResource extends Resource
                     ->label('Cetak PDF')
                     ->icon('heroicon-o-printer')
                     ->form([
-                        Forms\Components\Select::make('bulan')
-                            ->label('Bulan')
-                            ->options([
-                                '1' => 'Januari',
-                                '2' => 'Februari',
-                                '3' => 'Maret',
-                                '4' => 'April',
-                                '5' => 'Mei',
-                                '6' => 'Juni',
-                                '7' => 'Juli',
-                                '8' => 'Agustus',
-                                '9' => 'September',
-                                '10' => 'Oktober',
-                                '11' => 'November',
-                                '12' => 'Desember',
-                            ])
-                            ->default(date('n'))
+                        Forms\Components\DatePicker::make('tanggal_awal')
+                            ->label('Dari Tanggal')
                             ->required(),
 
-                        Forms\Components\Select::make('tahun')
-                            ->label('Tahun')
-                            ->options(array_combine(range(date('Y'), date('Y') - 5), range(date('Y'), date('Y') - 5)))
-                            ->default(date('Y'))
-                            ->required(),
+                        Forms\Components\DatePicker::make('tanggal_akhir')
+                            ->label('Sampai Tanggal')
+                            ->required()
+                            ->after('tanggal_awal'),
                     ])
                     ->action(function (array $data) {
                         $query = http_build_query([
-                            'periode' => 'bulanan',
-                            'bulan' => $data['bulan'],
-                            'tahun' => $data['tahun'],
+                            'tanggal_awal'  => $data['tanggal_awal'],
+                            'tanggal_akhir' => $data['tanggal_akhir'],
                         ]);
                         return redirect('/laporan/kegiatan/export?' . $query);
                     })
@@ -161,18 +144,23 @@ class KegiatanResource extends Resource
             ]);
     }
 
-public static function canAccess(): bool
-{
-    $user = Auth::user();
+    public static function canAccess(): bool
+    {
+        $user = Auth::user();
 
-    return $user && in_array($user->role, ['ketua','wakil', 'sekretaris']);
-}
+        return $user && in_array($user->role, ['ketua', 'wakil', 'sekretaris']);
+    }
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
+    public static function getNavigationGroup(): ?string
+    {
+        return '📅 Manajemen Kegiatan';
+    }
+
     public static function getPages(): array
     {
         return [

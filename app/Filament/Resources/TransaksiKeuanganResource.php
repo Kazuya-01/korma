@@ -70,7 +70,7 @@ class TransaksiKeuanganResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->defaultSort('tanggal', 'asc')
+            ->defaultSort('tanggal', 'desc')
             ->columns([
                 Tables\Columns\TextColumn::make('tanggal')->label('Tanggal')->date(),
 
@@ -138,15 +138,24 @@ class TransaksiKeuanganResource extends Resource
                 Tables\Actions\DeleteBulkAction::make(),
             ])
             ->headerActions([
+                Tables\Actions\Action::make('ringkasan')
+                    ->label('')
+                    ->disabled()
+                    ->extraAttributes([
+                        'class' => 'flex justify-start ml-0 pl-0 w-auto'
+                    ])
+                    ->view('components.ringkasan-keuangan'),
+
+
                 Tables\Actions\Action::make('tambah_transaksi')
                     ->label('Tambah Transaksi')
                     ->icon('heroicon-o-plus-circle')
-                    ->url(static::getUrl('create'))
+                    ->url(fn() => static::getUrl('create'))
                     ->color('primary')
                     ->button()
                     ->size('lg')
                     ->extraAttributes([
-                        'class' => 'font-semibold tracking-wide',
+                        'class' => 'ml-auto', // Dorong ke pojok kanan
                     ]),
             ]);
     }
@@ -157,6 +166,10 @@ class TransaksiKeuanganResource extends Resource
         $user = Auth::user();
 
         return $user && in_array($user->role, ['ketua', 'bendahara']);
+    }
+    public static function getNavigationGroup(): ?string
+    {
+        return '💰 Keuangan';
     }
 
     public static function getPages(): array

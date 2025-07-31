@@ -20,43 +20,41 @@ class ListTransaksiKeuangans extends ListRecords
                 ->icon('heroicon-o-printer')
                 ->color('primary')
                 ->form([
-                    Forms\Components\Select::make('periode')
-                        ->label('Periode')
-                        ->options([
-                            'bulanan' => 'Bulanan',
-                            'tahunan' => 'Tahunan',
-                        ])
-                        ->default('bulanan')
+                    Forms\Components\DatePicker::make('tanggal_awal')
+                        ->label('Dari Tanggal')
                         ->required(),
 
-                    Forms\Components\Select::make('bulan')
-                        ->label('Bulan')
-                        ->options([
-                            '1' => 'Januari',
-                            '2' => 'Februari',
-                            '3' => 'Maret',
-                            '4' => 'April',
-                            '5' => 'Mei',
-                            '6' => 'Juni',
-                            '7' => 'Juli',
-                            '8' => 'Agustus',
-                            '9' => 'September',
-                            '10' => 'Oktober',
-                            '11' => 'November',
-                            '12' => 'Desember',
-                        ])
-                        ->default(now()->month)
-                        ->visible(fn ($get) => $get('periode') === 'bulanan'),
+                    Forms\Components\DatePicker::make('tanggal_akhir')
+                        ->label('Sampai Tanggal')
+                        ->required()
+                        ->after('tanggal_awal'),
 
-                    Forms\Components\Select::make('tahun')
-                        ->label('Tahun')
-                        ->options(collect(range(now()->year, 2020))->mapWithKeys(fn ($y) => [$y => $y])->all())
-                        ->default(now()->year)
+                    Forms\Components\Select::make('jenis')
+                        ->label('Jenis Transaksi')
+                        ->options([
+                            'semua' => 'Semua',
+                            'pemasukan' => 'Pemasukan',
+                            'pengeluaran' => 'Pengeluaran',
+                        ])
+                        ->default('semua')
                         ->required(),
                 ])
                 ->action(function (array $data) {
                     $params = http_build_query($data);
-                    $url = route('laporan.keuangan.export') . '?' . $params;
+
+                    $fileName = 'laporan-keuangan-'
+                        . $data['tanggal_awal'] . '-sd-'
+                        . $data['tanggal_akhir'];
+
+                    if ($data['jenis'] !== 'semua') {
+                        $fileName .= '-' . $data['jenis'];
+                    }
+
+                    $fileName .= '.pdf';
+
+                    $url = route('laporan.keuangan.export')
+                        . '?' . $params
+                        . '&file=' . $fileName;
 
                     return redirect($url);
                 })

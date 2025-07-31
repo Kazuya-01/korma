@@ -53,9 +53,9 @@ class UsulanKegiatanResource extends Resource
                     'lainnya' => 'Lainnya',
                 ])
                 ->required(),
-                Forms\Components\TimePicker::make('waktu')
-    ->label('Waktu')
-    ->required(),
+            Forms\Components\TimePicker::make('waktu')
+                ->label('Waktu')
+                ->required(),
 
             Forms\Components\TextInput::make('pengusul')
                 ->label('Nama Pengusul')
@@ -95,9 +95,9 @@ class UsulanKegiatanResource extends Resource
                     ->limit(20)
                     ->action(fn($record) => $record),
                 Tables\Columns\TextColumn::make('nomor_anggota')
-                ->label('Nomor Anggota')
-                ->searchable()
-                ->sortable(),
+                    ->label('Nomor Anggota')
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('tanggal')->label('Tanggal')->date(),
                 Tables\Columns\TextColumn::make('waktu')->label('Waktu'),
                 Tables\Columns\TextColumn::make('kategori')->label('Kategori')->badge()->color('gray'),
@@ -146,7 +146,7 @@ class UsulanKegiatanResource extends Resource
                                     'tanggal'       => $record->tanggal,
                                     'lokasi'        => $record->lokasi,
                                     'kategori'      => $record->kategori,
-                                   'waktu' => $record->waktu && $record->waktu !== '' ? $record->waktu : '00:00',
+                                    'waktu' => $record->waktu && $record->waktu !== '' ? $record->waktu : '00:00',
                                     'terlaksana'    => false,
                                 ]);
                             }
@@ -163,6 +163,11 @@ class UsulanKegiatanResource extends Resource
     {
         return Auth::check() && in_array(Auth::user()->role, ['ketua', 'wakil', 'sekretaris']);
     }
+    public static function getNavigationGroup(): ?string
+    {
+        return '📅 Manajemen Kegiatan';
+    }
+
 
     public static function getPages(): array
     {

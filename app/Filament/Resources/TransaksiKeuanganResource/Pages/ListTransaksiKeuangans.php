@@ -12,53 +12,56 @@ class ListTransaksiKeuangans extends ListRecords
 {
     protected static string $resource = TransaksiKeuanganResource::class;
 
-    protected function getHeaderActions(): array
-    {
-        return [
-            Action::make('Cetak PDF')
-                ->label('Cetak PDF')
-                ->icon('heroicon-o-printer')
-                ->color('primary')
-                ->form([
-                    Forms\Components\DatePicker::make('tanggal_awal')
-                        ->label('Dari Tanggal')
-                        ->required(),
+   protected function getHeaderActions(): array
+{
+    return [
+        Action::make('Cetak PDF')
+            ->label('Cetak PDF')
+            ->icon('heroicon-o-printer')
+            ->color('primary')
+            ->form([
+                Forms\Components\DatePicker::make('tanggal_awal')
+                    ->label('Dari Tanggal')
+                    ->required(),
 
-                    Forms\Components\DatePicker::make('tanggal_akhir')
-                        ->label('Sampai Tanggal')
-                        ->required()
-                        ->after('tanggal_awal'),
+                Forms\Components\DatePicker::make('tanggal_akhir')
+                    ->label('Sampai Tanggal')
+                    ->required()
+                    ->after('tanggal_awal'),
 
-                    Forms\Components\Select::make('jenis')
-                        ->label('Jenis Transaksi')
-                        ->options([
-                            'semua' => 'Semua',
-                            'pemasukan' => 'Pemasukan',
-                            'pengeluaran' => 'Pengeluaran',
-                        ])
-                        ->default('semua')
-                        ->required(),
-                ])
-                ->action(function (array $data) {
-                    $params = http_build_query($data);
+                Forms\Components\Select::make('jenis')
+                    ->label('Jenis Transaksi')
+                    ->options([
+                        'semua' => 'Semua',
+                        'pemasukan' => 'Pemasukan',
+                        'pengeluaran' => 'Pengeluaran',
+                    ])
+                    ->default('semua')
+                    ->required(),
+            ])
+            ->action(function (array $data) {
+                // Buat URL export PDF
+                $params = http_build_query($data);
 
-                    $fileName = 'laporan-keuangan-'
-                        . $data['tanggal_awal'] . '-sd-'
-                        . $data['tanggal_akhir'];
+                $fileName = 'laporan-keuangan-'
+                    . $data['tanggal_awal'] . '-sd-'
+                    . $data['tanggal_akhir'];
 
-                    if ($data['jenis'] !== 'semua') {
-                        $fileName .= '-' . $data['jenis'];
-                    }
+                if ($data['jenis'] !== 'semua') {
+                    $fileName .= '-' . $data['jenis'];
+                }
 
-                    $fileName .= '.pdf';
+                $fileName .= '.pdf';
 
-                    $url = route('laporan.keuangan.export')
-                        . '?' . $params
-                        . '&file=' . $fileName;
+                $url = route('laporan.keuangan.export') . '?' . $params . '&file=' . $fileName;
 
-                    return redirect($url);
-                })
-                ->openUrlInNewTab(),
-        ];
-    }
+                return redirect()->away($url);
+            })
+            ->openUrlInNewTab()
+            ->successNotificationTitle('Laporan berhasil diunduh')
+            ->modalHeading('Cetak PDF')
+            ->modalSubmitActionLabel('Cetak')
+            ->modalCancelActionLabel('Batal'),
+    ];
+}
 }

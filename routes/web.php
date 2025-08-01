@@ -19,6 +19,8 @@ use App\Models\User;
 // Akses root diarahkan ke halaman publik
 Route::get('/', [PublicController::class, 'index'])->name('home');
 Route::post('/usulan', [\App\Http\Controllers\Public\UsulanKegiatanController::class, 'store']);
+Route::get('/laporan-keuangan/pdf', [PublicController::class, 'unduh'])
+    ->name('laporan.keuangan.pdf');
 /*
 |--------------------------------------------------------------------------
 | ROUTE ADMIN FILAMENT (Export)

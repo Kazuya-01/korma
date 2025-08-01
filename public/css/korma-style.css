@@ -144,3 +144,33 @@ section {
 .kontak-section {
     background-color: #f1f8f4;
 }
+.transparansi-keuangan .transparansi-card {
+    border-left: 6px solid #198754;
+    background: #fff;
+}
+
+.transparansi-keuangan .ringkasan-box {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+.transparansi-keuangan .ringkasan-box.pemasukan {
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.transparansi-keuangan .ringkasan-box.pengeluaran {
+    background: #f8d7da;
+    color: #842029;
+}
+
+.transparansi-keuangan .btn-outline-success {
+    transition: all 0.3s ease;
+}
+
+.transparansi-keuangan .btn-outline-success:hover {
+    background: #198754;
+    color: white;
+}

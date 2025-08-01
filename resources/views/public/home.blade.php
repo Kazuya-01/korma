@@ -98,6 +98,7 @@
             </div>
         </div>
     </section>
+    @include('partials.transparansi-keuangan')
 
     <!-- Kontak -->
     <section id="kontak" class="py-5 kontak-section">

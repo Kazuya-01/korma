@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\TransaksiKeuangan;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
-use Barryvdh\DomPDF\Facade\Pdf as DomPDF;
 use Carbon\Carbon;
 
 
@@ -12,33 +12,30 @@ class LaporanKeuanganController extends Controller
 {
     public function export(Request $request)
     {
-        $request->validate([
-            'periode' => 'required|in:bulanan,tahunan',
-            'tahun' => 'required|numeric',
-            'bulan' => 'nullable|numeric',
-        ]);
-
-
         $query = TransaksiKeuangan::query();
 
-        if ($request->periode === 'bulanan') {
-            $query->whereYear('tanggal', $request->tahun)
-                ->whereMonth('tanggal', $request->bulan);
-
-            $bulanNama = Carbon::createFromDate($request->tahun, $request->bulan, 1)->translatedFormat('F');
-            $judul = 'Laporan Keuangan Bulan ' . $bulanNama . ' ' . $request->tahun;
-        } else {
-            $query->whereYear('tanggal', $request->tahun);
-            $judul = 'Laporan Keuangan Tahun ' . $request->tahun;
+        // Filter tanggal
+        if ($request->filled('tanggal_awal')) {
+            $query->whereDate('tanggal', '>=', $request->tanggal_awal);
+        }
+        if ($request->filled('tanggal_akhir')) {
+            $query->whereDate('tanggal', '<=', $request->tanggal_akhir);
         }
 
-        $data = $query->get();
+        // Filter jenis
+        if ($request->jenis !== 'semua') {
+            $query->where('jenis', $request->jenis);
+        }
 
-        $pdf = DomPDF::loadView('exports.laporan-keuangan', [
-            'judul' => $judul,
-            'data' => $data,
-        ])->setPaper('A4', 'portrait');
+        $transaksi = $query->orderBy('tanggal')->get();
 
-        return $pdf->download('laporan-keuangan.pdf');
+        $pdf = Pdf::loadView('exports.laporan-keuangan', [
+            'transaksi' => $transaksi,
+            'tanggal_awal' => $request->tanggal_awal,
+            'tanggal_akhir' => $request->tanggal_akhir,
+            'jenis' => $request->jenis,
+        ]);
+
+        return $pdf->download($request->file ?? 'laporan-keuangan.pdf');
     }
 }

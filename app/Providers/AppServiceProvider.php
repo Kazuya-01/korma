@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\TransaksiKeuangan;
 use Filament\Facades\Filament;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\View;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,6 +23,26 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
 {
+     View::composer('partials.transparansi-keuangan', function ($view) {
+        $bulanIni = now()->month;
+        $tahunIni = now()->year;
+
+        $totalPemasukan = TransaksiKeuangan::where('jenis', 'pemasukan')->sum('jumlah');
+        $totalPengeluaran = TransaksiKeuangan::where('jenis', 'pengeluaran')->sum('jumlah');
+        $saldoKas = $totalPemasukan - $totalPengeluaran;
+
+        $pemasukanBulanIni = TransaksiKeuangan::where('jenis', 'pemasukan')
+            ->whereYear('tanggal', $tahunIni)
+            ->whereMonth('tanggal', $bulanIni)
+            ->sum('jumlah');
+
+        $pengeluaranBulanIni = TransaksiKeuangan::where('jenis', 'pengeluaran')
+            ->whereYear('tanggal', $tahunIni)
+            ->whereMonth('tanggal', $bulanIni)
+            ->sum('jumlah');
+
+        $view->with(compact('saldoKas', 'pemasukanBulanIni', 'pengeluaranBulanIni'));
+    });
     Filament::registerRenderHook(
         'scripts.end',
         fn (): string => <<<'HTML'

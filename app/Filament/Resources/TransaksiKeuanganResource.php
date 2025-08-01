@@ -54,8 +54,8 @@ class TransaksiKeuanganResource extends Resource
                 ->label('Tanggal')
                 ->required(),
 
-            Forms\Components\Textarea::make('deskripsi')
-                ->label('Deskripsi')
+            Forms\Components\Textarea::make('keterangan')
+                ->label('Keterangan')
                 ->rows(3),
 
             Forms\Components\FileUpload::make('bukti')
@@ -85,7 +85,9 @@ class TransaksiKeuanganResource extends Resource
                     ->label('Jumlah')
                     ->money('IDR', locale: 'id'),
 
-                Tables\Columns\TextColumn::make('deskripsi')->limit(20),
+                Tables\Columns\TextColumn::make('keterangan')
+                    ->label('Keterangan')
+                    ->limit(20),
 
                 Tables\Columns\ImageColumn::make('bukti')
                     ->label('Bukti')

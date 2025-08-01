@@ -67,6 +67,7 @@
                     <li class="nav-item"><a class="nav-link" href="#tentang">Tentang</a></li>
                     <li class="nav-item"><a class="nav-link" href="#kegiatan">Kegiatan</a></li>
                     <li class="nav-item"><a class="nav-link" href="#usulan">Usulan</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#keuangan">Keuangan</a></li>
                     <li class="nav-item"><a class="nav-link" href="#kontak">Kontak</a></li>
                 </ul>
             </div>
